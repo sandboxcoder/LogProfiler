@@ -4,13 +4,17 @@
 #include <cstdio>
 #include <algorithm>
 #include <cstring>
-#include "NanoLog.hpp"
 #include "spdlog/spdlog.h"
+#include "spdlog/async.h"
+#include "spdlog/sinks/basic_file_sink.h"
 #include "g3log/g3log.hpp"
 #include "g3log/logworker.hpp"
-#include "reckless/severity_log.hpp"
-#include "reckless/file_writer.hpp"
+#include <QtCore/QDebug>
+#include <mutex>
 
+namespace {
+	std::mutex g_qt_debug_mutex;
+}
 /* Returns microseconds since epoch */
 uint64_t timestamp_now()
 {
@@ -80,19 +84,10 @@ int main(int argc, char * argv[])
 	return 0;
     }
 
-    if (strcmp(argv[1], "nanolog") == 0)
+    if (strcmp(argv[1], "spdlog") == 0)
     {
-	// Guaranteed nano log.
-	nanolog::initialize(nanolog::GuaranteedLogger(), "/tmp/", "nanolog", 1);
-
-	auto nanolog_benchmark = [](int i, char const * const cstr) {  LOG_INFO << "Logging " << cstr << i << 0 << 'K' << -42.42; };
-	for (auto threads : { 1, 2, 3, 4 })
-	    run_benchmark(nanolog_benchmark, threads, "nanolog_guaranteed");
-    }
-    else if (strcmp(argv[1], "spdlog") == 0)
-    {
-	spdlog::set_async_mode(1048576);
-	auto spd_logger = spdlog::create < spdlog::sinks::simple_file_sink_mt >("file_logger", "/tmp/spd-async.txt", false);
+	//spdlog::set_async_mode(1048576);
+	auto spd_logger = spdlog::basic_logger_mt<spdlog::async_factory>("file_logger", "async_log.txt");
 
 	auto spdlog_benchmark = [&spd_logger](int i, char const * const cstr) { spd_logger->info("Logging {}{}{}{}{}", cstr, i, 0, 'K', -42.42); };
 	for (auto threads : { 1, 2, 3, 4 })
@@ -101,28 +96,28 @@ int main(int argc, char * argv[])
     else if (strcmp(argv[1], "g3log") == 0)
     {
 	auto worker = g3::LogWorker::createLogWorker();
-	auto handle = worker->addDefaultLogger("g3", "/tmp/");
+	auto handle = worker->addDefaultLogger("g3", "tmp/");
 	g3::initializeLogging(worker.get());
 
 	auto g3log_benchmark = [](int i, char const * const cstr) { LOGF(INFO, "Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42); };
 	for (auto threads : { 1, 2, 3, 4 })
 	    run_benchmark(g3log_benchmark, threads, "g3log");
     }
-    else if (strcmp(argv[1], "reckless") == 0)
-    {
-	using log_t = reckless::severity_log < reckless::indent < 4 >, ' ', reckless::severity_field, reckless::timestamp_field >;
-	reckless::file_writer writer("/tmp/reckless.txt");
-	log_t g_log(&writer);
-
-	auto reckless_benchmark = [&g_log](int i, char const * const cstr) { g_log.info("Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42); };
-	for (auto threads : { 1, 2, 3, 4 })
-	    run_benchmark(reckless_benchmark, threads, "reckless");
-    }
+	else if (strcmp(argv[1], "qt5") == 0)
+	{
+		auto qtlog_benchmark = [](int i, char const * const cstr) {
+			std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
+			qDebug() << cstr << i << 0 << 'K' << -42.42;
+		};
+		for (auto threads : { 1, 2, 3, 4 })
+			run_benchmark(qtlog_benchmark, threads, "g3log");
+	}
     else
     {
 	print_usage();
     }
 
+	system("pause");
     return 0;
 }
 
