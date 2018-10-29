@@ -96,6 +96,7 @@ int main(int argc, char * argv[])
 
     if (strcmp(argv[1], "spdlog") == 0)
     {
+		spdlog::init_thread_pool(1048576, 1);
 		auto spd_logger = spdlog::basic_logger_mt<spdlog::async_factory>("file_logger", "async_log.txt");
 
 		auto spdlog_benchmark = [&spd_logger](int i, char const * const cstr) { spd_logger->info("Logging {}{}{}{}{}", cstr, i, 0, 'K', -42.42); };

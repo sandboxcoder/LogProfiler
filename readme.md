@@ -2,7 +2,9 @@
 
 Compares spdlog vs g3log vs Qt
 
- Special thanks to Nanolog which is where I got the performance tests: https://github.com/Iyengar111/NanoLog
+Special thanks to Nanolog which is where I got the performance tests: https://github.com/Iyengar111/NanoLog
+
+* Disclaimer: I noticed on my Windows machine spdlog was easily much faster than the other loggers. Below, the metrics are from my MacBook Pro where it is running slower.
 
 ## Building Log Profiler
 
@@ -12,12 +14,14 @@ Below is an example Windows build:
 mkdir build
 cd build
 cmake -G "Visual Studio 15 2017 Win64" -DQTCORE_ROOT=C:/Projects/qt5/qtbase -DG3LOG_LIB=C:/Projects/3rdParty/g3log/build/Release/g3logger.lib -DG3LOG_INCLUDE_DIR=C:/Projects/3rdParty/g3log/src -DG3LOG_GENERATED_HEADER=C:/Projects/3rdParty/g3log/build/include ..
+(Open Visual Studio and compile)
 ```
 
 For Mac OSX:
 
 ```bash
-cmake -DCMAKE_CXX_COMPILER=clang++  -DCMAKE_BUILD_TYPE=Release -DQTCORE_INCLUDE=/Users/<user>/homebrew/opt/qt/include -DQTCORE_LIB=/Users/<user>/homebrew/opt/qt/lib/QtCore.framework -DG3LOG_GENERATED_HEADER=/Users/<user>/Projects/g3log/build/include -DG3LOG_INCLUDE_DIR=/Users/<user>/Projects/g3log/src -DG3LOG_LIB=/Users/<user>/Projects/g3log/build/libg3logger.dylib .. 
+cmake -G "Unix makefiles" -DCMAKE_BUILD_TYPE=Release -DQTCORE_INCLUDE=/Users/<user>/homebrew/opt/qt/include -DQTCORE_LIB=/Users/<user>/homebrew/opt/qt/lib/QtCore.framework -DG3LOG_GENERATED_HEADER=/Users/<user>/Projects/g3log/build/include -DG3LOG_INCLUDE_DIR=/Users/<user>/Projects/g3log/src -DG3LOG_LIB=/Users/<user>/Projects/g3log/build/libg3logger.dylib .. 
+make
 ```
 
 ### Results for spdlog
@@ -26,41 +30,40 @@ cmake -DCMAKE_CXX_COMPILER=clang++  -DCMAKE_BUILD_TYPE=Release -DQTCORE_INCLUDE=
 Thread count: 1
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        7|        8|        8|       25|       36|       89| 7.553530|
+        7|        8|        8|       26|       38|       88| 7.443040|
 
 Thread count: 2
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       12|       27|       27|       59|      103|      383|18.911850|
+       12|       12|       13|       35|       61|      116|12.579710|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       12|       27|       28|       58|      103|      377|18.924740|
+       12|       12|       13|       35|       61|      125|12.575340|
 
 Thread count: 3
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       34|       35|       36|       91|      155|      904|35.424360|
+       16|       16|       17|       48|       77|      149|16.561850|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       34|       35|       36|       91|      156|      867|35.435570|
+       16|       16|       17|       48|       75|      124|16.562900|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       34|       35|       36|       92|      163|      894|35.434090|
+       16|       16|       17|       48|       77|      126|16.556590|
 
 Thread count: 4
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       45|       46|       49|      129|      222|      911|47.865100|
+       20|       20|       21|       56|       85|      155|20.985520|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       45|       46|       49|      129|      225|      974|47.883690|
+       20|       20|       21|       56|       84|      130|20.984520|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       45|       46|       49|      129|      220|     1105|47.886960|
+       20|       20|       21|       56|       85|      136|20.984200|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       45|       46|       49|      129|      231|      908|47.876270|
-
+       20|       20|       21|       56|       85|      201|20.980000|
 ```
 
 ### Results for g3log
