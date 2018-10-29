@@ -21,40 +21,40 @@ cmake -G "Visual Studio 15 2017 Win64" -DQTCORE_ROOT=C:/Projects/qt5/qtbase -DG3
 Thread count: 1
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|        2|        2|       18|       97|    24203| 3.256430|
+        1|        2|        2|       14|       84|     5402| 2.007680|
 
 Thread count: 2
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|        2|        4|       39|      181|    24851| 5.556310|
+        2|        2|        6|       49|      293|    13511| 5.654200|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|        2|        4|       38|      178|    24847| 5.345230|
+        2|        2|        6|       51|      295|    22428| 6.007530|
 
 Thread count: 3
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|        4|       34|      102|      496|    26997|12.497280|
+        2|        6|       31|      104|      452|     9354|11.735600|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|        5|       35|      105|      533|    25941|12.977840|
+        2|        7|       31|      106|      430|     9984|11.905410|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|        5|       35|      107|      533|    30044|12.254840|
+        2|        7|       31|      107|      451|    14807|12.142390|
 
 Thread count: 4
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|       23|       44|      133|      835|     8847|16.711040|
+        2|       21|       39|      113|      574|     5200|14.385980|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|       24|       44|      133|      832|     8770|16.954360|
+        2|       22|       39|      118|      649|     7221|14.910420|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|       24|       44|      129|      788|     8771|16.947350|
+        2|       22|       39|      121|      584|     8738|14.843960|
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        2|       23|       44|      132|      828|     8794|17.124140|
+        2|       22|       40|      126|      598|    10148|14.928000|
 ```
 
 ### Results for g3log
@@ -63,40 +63,82 @@ spdlog percentile latency numbers in microseconds
 Thread count: 1
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        7|       56|      706|    41345|12.835710|
+        4|        5|        5|       31|      174|    31917| 6.895430|
 
 Thread count: 2
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        6|       25|      214|    42954|10.342910|
+        4|        5|        5|       19|      201|    41167| 7.848010|
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        6|       24|      271|    48316|10.797240|
+        4|        5|        5|       22|      380|    34261| 8.558150|
 
 Thread count: 3
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        6|       14|      238|    33195| 9.737560|
+        4|        5|        5|       10|      267|    24540| 7.862150|
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        6|       13|      252|    37202|10.165600|
+        5|        5|        5|       11|      276|    36898| 8.575030|
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        6|       13|      169|    43447| 9.938160|
+        5|        5|        5|       10|      277|    31939| 8.202260|
 
 Thread count: 4
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        6|       11|      297|    35729|10.434270|
+        5|        5|        5|       10|      304|    30042| 9.006020|
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        5|        6|        6|       11|      322|    37320|11.060020|
+        5|        5|        5|        9|      287|    35403| 9.059890|
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        6|        6|        6|       12|      316|    43998|11.626780|
+        5|        5|        5|       10|      285|    40089| 9.738090|
 g3log percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        6|        6|        6|       11|      292|    39051|11.387350|
+        5|        5|        5|       10|      283|    49931| 9.879920|
 
 
+```
+
+### Results for Qt
+
+```bash
+Thread count: 1
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        2|        3|        3|        7|      255|    61524| 6.613520|
+
+Thread count: 2
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        2|        3|        3|        5|      386|    34532| 5.841270|
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        2|        3|        3|        5|      660|    10814| 5.739830|
+
+Thread count: 3
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        3|        3|        3|        4|     1324|    18460| 7.848550|
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        2|        3|        3|        4|     1399|    21945| 7.987410|
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        3|        3|        3|        4|     1774|    20565| 8.529770|
+
+Thread count: 4
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        2|        3|        3|        5|     3170|    23339|11.585570|
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        2|        3|        3|        5|     2909|    25447|11.687090|
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        2|        3|        3|        5|     3424|    25107|12.365340|
+qt5 percentile latency numbers in microseconds
+     50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
+        4|        5|        5|        8|     2959|    13982|12.427000|
 ```

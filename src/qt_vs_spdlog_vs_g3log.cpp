@@ -10,6 +10,8 @@
 #include "g3log/g3log.hpp"
 #include "g3log/logworker.hpp"
 #include <QtCore/QDebug>
+#include <QtCore/QMessageLogger>
+#include <QtCore/QGlobal.h>
 #include <mutex>
 
 namespace {
@@ -76,6 +78,8 @@ void print_usage()
     printf("Usage \n1. %s nanolog\n2. %s spdlog\n3. %s g3log\n4. %s reckless\n", executable, executable, executable, executable);
 }
 
+void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg) {}
+
 int main(int argc, char * argv[])
 {
     if (argc != 2)
@@ -86,7 +90,6 @@ int main(int argc, char * argv[])
 
     if (strcmp(argv[1], "spdlog") == 0)
     {
-	//spdlog::set_async_mode(1048576);
 	auto spd_logger = spdlog::basic_logger_mt<spdlog::async_factory>("file_logger", "async_log.txt");
 
 	auto spdlog_benchmark = [&spd_logger](int i, char const * const cstr) { spd_logger->info("Logging {}{}{}{}{}", cstr, i, 0, 'K', -42.42); };
@@ -105,12 +108,14 @@ int main(int argc, char * argv[])
     }
 	else if (strcmp(argv[1], "qt5") == 0)
 	{
+		qInstallMessageHandler(myMessageHandler);
 		auto qtlog_benchmark = [](int i, char const * const cstr) {
 			std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
-			qDebug() << cstr << i << 0 << 'K' << -42.42;
+			//qDebug() << "Logging " << cstr << i << 0 << 'K' << -42.42;
+			QMessageLogger().info("Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42);
 		};
 		for (auto threads : { 1, 2, 3, 4 })
-			run_benchmark(qtlog_benchmark, threads, "g3log");
+			run_benchmark(qtlog_benchmark, threads, "qt5");
 	}
     else
     {
