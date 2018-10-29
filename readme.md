@@ -1,6 +1,8 @@
-# Log Porfiler
+# Log Profiler
 
 Compares spdlog vs g3log vs Qt
+
+ Special thanks to Nanolog which is where I got the performance tests: https://github.com/Iyengar111/NanoLog
 
 ## Building Log Profiler
 
