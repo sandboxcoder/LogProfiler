@@ -12,6 +12,8 @@
 #include <QtCore/QDebug>
 #include <QtCore/QMessageLogger>
 #include <QtCore/QGlobal.h>
+#include <QtCore/QFile.h>
+#include <QtCore/QTextStream.h>
 #include <mutex>
 
 namespace {
@@ -99,7 +101,7 @@ int main(int argc, char * argv[])
     else if (strcmp(argv[1], "g3log") == 0)
     {
 	auto worker = g3::LogWorker::createLogWorker();
-	auto handle = worker->addDefaultLogger("g3", "tmp/");
+	auto handle = worker->addDefaultLogger("g3", "tmp");
 	g3::initializeLogging(worker.get());
 
 	auto g3log_benchmark = [](int i, char const * const cstr) { LOGF(INFO, "Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42); };
@@ -109,12 +111,16 @@ int main(int argc, char * argv[])
 	else if (strcmp(argv[1], "qt5") == 0)
 	{
 		qInstallMessageHandler(myMessageHandler);
-		auto qtlog_benchmark = [](int i, char const * const cstr) {
-			std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
-			QMessageLogger().info("Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42);
-		};
-		for (auto threads : { 1, 2, 3, 4 })
-			run_benchmark(qtlog_benchmark, threads, "qt5");
+		QFile data("qlog.txt");
+		if (data.open(QFile::WriteOnly | QFile::Truncate)) {
+			QTextStream out(&data);
+			auto qtlog_benchmark = [&out](int i, char const * const cstr) {
+				std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
+				out << "Logging %s%d%d%c%lf" << cstr << i << 0 << 'K' << -42.42;
+			};
+			for (auto threads : { 1, 2, 3, 4 })
+				run_benchmark(qtlog_benchmark, threads, "qt5");
+		}
 	}
     else
     {
