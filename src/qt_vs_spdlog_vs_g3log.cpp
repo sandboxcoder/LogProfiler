@@ -18,7 +18,7 @@
 
 namespace {
 	std::mutex g_qt_debug_mutex;
-	std::shared_ptr<QTextStream> out;
+	std::shared_ptr<QTextStream> g_qt_output;
 }
 /* Returns microseconds since epoch */
 uint64_t timestamp_now()
@@ -67,11 +67,11 @@ void run_benchmark(Function && f, int thread_count, char const * const logger)
     std::vector < std::thread > threads;
     for (int i = 0; i < thread_count; ++i)
     {
-	threads.emplace_back(run_log_benchmark<Function>, std::ref(f), logger);
+		threads.emplace_back(run_log_benchmark<Function>, std::ref(f), logger);
     }
     for (int i = 0; i < thread_count; ++i)
     {
-	threads[i].join();
+		threads[i].join();
     }
 }
 
@@ -83,41 +83,41 @@ void print_usage()
 
 void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg) {
 	std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
-	(*out) << msg;
+	(*g_qt_output) << msg;
 }
 
 int main(int argc, char * argv[])
 {
     if (argc != 2)
     {
-	print_usage();
-	return 0;
+		print_usage();
+		return 0;
     }
 
     if (strcmp(argv[1], "spdlog") == 0)
     {
-	auto spd_logger = spdlog::basic_logger_mt<spdlog::async_factory>("file_logger", "async_log.txt");
+		auto spd_logger = spdlog::basic_logger_mt<spdlog::async_factory>("file_logger", "async_log.txt");
 
-	auto spdlog_benchmark = [&spd_logger](int i, char const * const cstr) { spd_logger->info("Logging {}{}{}{}{}", cstr, i, 0, 'K', -42.42); };
-	for (auto threads : { 1, 2, 3, 4 })
-	    run_benchmark(spdlog_benchmark, threads, "spdlog");
+		auto spdlog_benchmark = [&spd_logger](int i, char const * const cstr) { spd_logger->info("Logging {}{}{}{}{}", cstr, i, 0, 'K', -42.42); };
+		for (auto threads : { 1, 2, 3, 4 })
+			run_benchmark(spdlog_benchmark, threads, "spdlog");
     }
     else if (strcmp(argv[1], "g3log") == 0)
     {
-	auto worker = g3::LogWorker::createLogWorker();
-	auto handle = worker->addDefaultLogger("g3", "tmp");
-	g3::initializeLogging(worker.get());
+		auto worker = g3::LogWorker::createLogWorker();
+		auto handle = worker->addDefaultLogger("g3", "tmp");
+		g3::initializeLogging(worker.get());
 
-	auto g3log_benchmark = [](int i, char const * const cstr) { LOGF(INFO, "Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42); };
-	for (auto threads : { 1, 2, 3, 4 })
-	    run_benchmark(g3log_benchmark, threads, "g3log");
+		auto g3log_benchmark = [](int i, char const * const cstr) { LOGF(INFO, "Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42); };
+		for (auto threads : { 1, 2, 3, 4 })
+			run_benchmark(g3log_benchmark, threads, "g3log");
     }
 	else if (strcmp(argv[1], "qt5") == 0)
 	{
 		qInstallMessageHandler(myMessageHandler);
 		QFile data("qlog.txt");
 		if (data.open(QFile::WriteOnly | QFile::Truncate)) {
-			out.reset(new QTextStream(&data));
+			g_qt_output.reset(new QTextStream(&data));
 			auto qtlog_benchmark = [](int i, char const * const cstr) {
 				QMessageLogger().info("Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42);
 			};
@@ -127,7 +127,7 @@ int main(int argc, char * argv[])
 	}
     else
     {
-	print_usage();
+		print_usage();
     }
 
 	system("pause");
