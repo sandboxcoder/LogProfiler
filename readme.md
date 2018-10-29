@@ -60,7 +60,7 @@ spdlog percentile latency numbers in microseconds
 spdlog percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
        45|       46|       49|      129|      231|      908|47.876270|
-       
+
 ```
 
 ### Results for g3log
@@ -112,39 +112,39 @@ g3log percentile latency numbers in microseconds
 Thread count: 1
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        1|        1|        1|        2|       15|      113| 0.910900|
+        1|        2|        2|        2|       24|      107| 1.384600|
 
 Thread count: 2
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        9|       10|       12|       31|       56|    34525|10.493270|
+        7|        8|        8|       29|       59|      295| 5.782430|
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-        9|       10|       12|       31|       56|    34542|10.488030|
+        7|        8|        8|       29|       60|      286| 5.781700|
 
 Thread count: 3
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       15|       20|       21|       41|       71|      864|17.248880|
+       13|       13|       14|       46|       77|      543|13.769700|
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       15|       20|       21|       40|       74|      864|17.247920|
+       13|       13|       14|       46|       77|      543|13.770550|
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       15|       20|       21|       40|       70|      862|17.236870|
+       13|       13|       14|       46|       76|      543|13.762800|
 
 Thread count: 4
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       19|       20|       20|       52|       88|      825|20.316400|
+       16|       17|       17|       47|       78|      786|17.169880|
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       19|       20|       20|       52|       89|      824|20.319250|
+       16|       17|       17|       47|       79|      776|17.174030|
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       19|       20|       20|       52|       88|      826|20.310790|
+       16|       17|       17|       47|       78|      785|17.172090|
 qt5 percentile latency numbers in microseconds
      50th|     75th|     90th|     99th|   99.9th|    Worst|  Average|
-       19|       20|       20|       52|       89|      826|20.318940|
+       16|       17|       17|       47|       79|      786|17.162830|
 
 ```

@@ -18,6 +18,7 @@
 
 namespace {
 	std::mutex g_qt_debug_mutex;
+	std::shared_ptr<QTextStream> out;
 }
 /* Returns microseconds since epoch */
 uint64_t timestamp_now()
@@ -80,7 +81,10 @@ void print_usage()
     printf("Usage \n1. %s nanolog\n2. %s spdlog\n3. %s g3log\n4. %s reckless\n", executable, executable, executable, executable);
 }
 
-void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg) {}
+void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg) {
+	std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
+	(*out) << msg;
+}
 
 int main(int argc, char * argv[])
 {
@@ -113,10 +117,9 @@ int main(int argc, char * argv[])
 		qInstallMessageHandler(myMessageHandler);
 		QFile data("qlog.txt");
 		if (data.open(QFile::WriteOnly | QFile::Truncate)) {
-			QTextStream out(&data);
-			auto qtlog_benchmark = [&out](int i, char const * const cstr) {
-				std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
-				out << "Logging %s%d%d%c%lf" << cstr << i << 0 << 'K' << -42.42;
+			out.reset(new QTextStream(&data));
+			auto qtlog_benchmark = [](int i, char const * const cstr) {
+				QMessageLogger().info("Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42);
 			};
 			for (auto threads : { 1, 2, 3, 4 })
 				run_benchmark(qtlog_benchmark, threads, "qt5");
