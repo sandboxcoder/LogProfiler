@@ -111,7 +111,6 @@ int main(int argc, char * argv[])
 		qInstallMessageHandler(myMessageHandler);
 		auto qtlog_benchmark = [](int i, char const * const cstr) {
 			std::lock_guard<std::mutex> lock(g_qt_debug_mutex);
-			//qDebug() << "Logging " << cstr << i << 0 << 'K' << -42.42;
 			QMessageLogger().info("Logging %s%d%d%c%lf", cstr, i, 0, 'K', -42.42);
 		};
 		for (auto threads : { 1, 2, 3, 4 })
