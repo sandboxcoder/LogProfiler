@@ -1,4 +1,6 @@
+// This code was shamelessly lifted from https://github.com/Iyengar111/NanoLog/blob/master/nano_vs_spdlog_vs_g3log_vs_reckless.cpp
 #include <chrono>
+#include <iostream>
 #include <thread>
 #include <vector>
 #include <cstdio>
@@ -20,28 +22,24 @@ namespace {
 	std::mutex g_qt_debug_mutex;
 	std::shared_ptr<QTextStream> g_qt_output;
 }
-/* Returns microseconds since epoch */
-uint64_t timestamp_now()
-{
-    return std::chrono::high_resolution_clock::now().time_since_epoch() / std::chrono::microseconds(1);
-}
 
 template < typename Function >
 void run_log_benchmark(Function && f, char const * const logger)
 {
     int iterations = 100000;
-    std::vector < uint64_t > latencies;
+    std::vector < double > latencies;
     char const * const benchmark = "benchmark";
     for (int i = 0; i < iterations; ++i)
     {
-	uint64_t begin = timestamp_now();
+	auto begin = std::chrono::high_resolution_clock::now();
 	f(i, benchmark);
-	uint64_t end = timestamp_now();
-	latencies.push_back(end - begin);
+	auto delta = std::chrono::high_resolution_clock::now() - begin;
+	auto delta_d = std::chrono::duration_cast<std::chrono::duration<double>>(delta).count();
+	latencies.push_back(delta_d);
     }
     std::sort(latencies.begin(), latencies.end());
-    uint64_t sum = 0; for (auto l : latencies) { sum += l; }
-    printf("%s percentile latency numbers in microseconds\n%9s|%9s|%9s|%9s|%9s|%9s|%9s|\n%9ld|%9ld|%9ld|%9ld|%9ld|%9ld|%9lf|\n"
+    double sum = 0; for (auto latency : latencies) { sum += latency; }
+    printf("%s percentile latency numbers in nanoseconds\n%9s|%9s|%9s|%9s|%9s|%9s|%9s|\n%9s|%9s|%9s|%9s|%9s|%9s|%9f|\n"
 	   , logger
 	   , "50th"
 	   , "75th"
@@ -50,12 +48,12 @@ void run_log_benchmark(Function && f, char const * const logger)
 	   , "99.9th"
 	   , "Worst"
 	   , "Average"
-	   , latencies[(size_t)iterations * 0.5]
-	   , latencies[(size_t)iterations * 0.75]
-	   , latencies[(size_t)iterations * 0.9]
-	   , latencies[(size_t)iterations * 0.99]
-	   , latencies[(size_t)iterations * 0.999]
-	   , latencies[latencies.size() - 1]
+	   , std::to_string(latencies[(size_t)iterations * 0.5])
+	   , std::to_string(latencies[(size_t)iterations * 0.75])
+	   , std::to_string(latencies[(size_t)iterations * 0.9])
+	   , std::to_string(latencies[(size_t)iterations * 0.99])
+	   , std::to_string(latencies[(size_t)iterations * 0.999])
+	   , std::to_string(latencies[latencies.size() - 1])
 	   , (sum * 1.0) / latencies.size()
 	);
 }
@@ -77,8 +75,8 @@ void run_benchmark(Function && f, int thread_count, char const * const logger)
 
 void print_usage()
 {
-    char const * const executable = "nano_vs_spdlog_vs_g3log_vs_reckless";
-    printf("Usage \n1. %s nanolog\n2. %s spdlog\n3. %s g3log\n4. %s reckless\n", executable, executable, executable, executable);
+    char const * const executable = "LogProfile";
+    printf("Usage \n1. %s qt5\n2. %s spdlog\n3. %s g3log\n", executable, executable, executable, executable);
 }
 
 void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg) {
@@ -91,6 +89,7 @@ int main(int argc, char * argv[])
     if (argc != 2)
     {
 		print_usage();
+		system("pause");
 		return 0;
     }
 
